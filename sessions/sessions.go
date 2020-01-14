@@ -63,7 +63,7 @@ func New(instances []config.Instance, client *http.Client, trace bool) (*Session
 		}
 
 		// use given credentials, or default credential chain
-		creds, err := buildCredentials(instance)
+		creds, err := buildCredentials(instance, client)
 
 		if err != nil {
 			return nil, err
@@ -173,7 +173,7 @@ func makeSessionKey(instance config.Instance) string {
 	return ""
 }
 
-func buildCredentials(instance config.Instance) (*credentials.Credentials, error) {
+func buildCredentials(instance config.Instance, client *http.Client) (*credentials.Credentials, error) {
 	if instance.AWSAccessKey != "" || instance.AWSSecretKey != "" {
 		return credentials.NewCredentials(&credentials.StaticProvider{
 			Value: credentials.Value{
@@ -186,6 +186,7 @@ func buildCredentials(instance config.Instance) (*credentials.Credentials, error
 	if instance.AWSRoleARN != "" {
 		stsSession, err := session.NewSession(&aws.Config{
 			Region: aws.String(instance.Region),
+			HTTPClient: client,
 		})
 		if err != nil {
 			return nil, err
