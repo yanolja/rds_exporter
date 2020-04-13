@@ -28,30 +28,30 @@ type osMetrics struct {
 	Uptime             string    `json:"uptime"             help:"The amount of time that the DB instance has been active."`
 	Version            float64   `json:"version"            help:"The version of the OS metrics' stream JSON format."`
 
-	CPUUtilization    cpuUtilization    `json:"cpuUtilization"`
-	DiskIO            []diskIO          `json:"diskIO"`
-	FileSys           []fileSys         `json:"fileSys"`
+	CPUUtilization cpuUtilization `json:"cpuUtilization"`
+	DiskIO         []diskIO       `json:"diskIO"`
+	//FileSys           []fileSys         `json:"fileSys"`
 	LoadAverageMinute loadAverageMinute `json:"loadAverageMinute"`
 	Memory            memory            `json:"memory"`
-	Network           []network         `json:"network"`
-	ProcessList       []processList     `json:"processList"`
-	Swap              swap              `json:"swap"`
-	Tasks             tasks             `json:"tasks"`
+	//Network           []network         `json:"network"`
+	//ProcessList       []processList     `json:"processList"`
+	//Swap              swap              `json:"swap"`
+	//Tasks             tasks             `json:"tasks"`
 
 	// TODO Handle this: https://jira.percona.com/browse/PMM-3835
 	PhysicalDeviceIO []diskIO `json:"physicalDeviceIO"`
 }
 
 type cpuUtilization struct {
-	Guest  float64 `json:"guest"  help:"The percentage of CPU in use by guest programs."`
-	Idle   float64 `json:"idle"   help:"The percentage of CPU that is idle."`
-	Irq    float64 `json:"irq"    help:"The percentage of CPU in use by software interrupts."`
-	Nice   float64 `json:"nice"   help:"The percentage of CPU in use by programs running at lowest priority."`
-	Steal  float64 `json:"steal"  help:"The percentage of CPU in use by other virtual machines."`
+	//Guest  float64 `json:"guest"  help:"The percentage of CPU in use by guest programs."`
+	//Idle   float64 `json:"idle"   help:"The percentage of CPU that is idle."`
+	//Irq    float64 `json:"irq"    help:"The percentage of CPU in use by software interrupts."`
+	//Nice   float64 `json:"nice"   help:"The percentage of CPU in use by programs running at lowest priority."`
+	//Steal  float64 `json:"steal"  help:"The percentage of CPU in use by other virtual machines."`
 	System float64 `json:"system" help:"The percentage of CPU in use by the kernel."`
-	Total  float64 `json:"total"  help:"The total percentage of the CPU in use. This value includes the nice value."`
-	User   float64 `json:"user"   help:"The percentage of CPU in use by user programs."`
-	Wait   float64 `json:"wait"   help:"The percentage of CPU unused while waiting for I/O access."`
+	//Total  float64 `json:"total"  help:"The total percentage of the CPU in use. This value includes the nice value."`
+	User float64 `json:"user"   help:"The percentage of CPU in use by user programs."`
+	Wait float64 `json:"wait"   help:"The percentage of CPU unused while waiting for I/O access."`
 }
 
 //nolint:lll
@@ -62,17 +62,19 @@ type diskIO struct {
 	Device     string  `json:"device"     help:"The identifier of the disk device in use."`
 
 	// non-Aurora
-	AvgQueueLen *float64 `json:"avgQueueLen" help:"The number of requests waiting in the I/O device's queue."`
-	AvgReqSz    *float64 `json:"avgReqSz"    help:"The average request size, in kilobytes."`
-	Await       *float64 `json:"await"       help:"The number of milliseconds required to respond to requests, including queue time and service time."`
-	ReadKb      *int     `json:"readKb"      help:"The total number of kilobytes read."`
-	ReadKbPS    *float64 `json:"readKbPS"    help:"The number of kilobytes read per second."`
-	RrqmPS      *float64 `json:"rrqmPS"      help:"The number of merged read requests queued per second."`
-	TPS         *float64 `json:"tps"         help:"The number of I/O transactions per second."`
-	Util        *float64 `json:"util"        help:"The percentage of CPU time during which requests were issued."`
-	WriteKb     *int     `json:"writeKb"     help:"The total number of kilobytes written."`
-	WriteKbPS   *float64 `json:"writeKbPS"   help:"The number of kilobytes written per second."`
-	WrqmPS      *float64 `json:"wrqmPS"      help:"The number of merged write requests queued per second."`
+	/*
+		AvgQueueLen *float64 `json:"avgQueueLen" help:"The number of requests waiting in the I/O device's queue."`
+		AvgReqSz    *float64 `json:"avgReqSz"    help:"The average request size, in kilobytes."`
+		Await       *float64 `json:"await"       help:"The number of milliseconds required to respond to requests, including queue time and service time."`
+		ReadKb      *int     `json:"readKb"      help:"The total number of kilobytes read."`
+		ReadKbPS    *float64 `json:"readKbPS"    help:"The number of kilobytes read per second."`
+		RrqmPS      *float64 `json:"rrqmPS"      help:"The number of merged read requests queued per second."`
+		TPS         *float64 `json:"tps"         help:"The number of I/O transactions per second."`
+		Util        *float64 `json:"util"        help:"The percentage of CPU time during which requests were issued."`
+		WriteKb     *int     `json:"writeKb"     help:"The total number of kilobytes written."`
+		WriteKbPS   *float64 `json:"writeKbPS"   help:"The number of kilobytes written per second."`
+		WrqmPS      *float64 `json:"wrqmPS"      help:"The number of merged write requests queued per second."`
+	*/
 
 	// Aurora
 	DiskQueueDepth  *float64 `json:"diskQueueDepth"  help:"The number of outstanding IOs (read/write requests) waiting to access the disk."`
@@ -102,22 +104,25 @@ type loadAverageMinute struct {
 
 //nolint:lll
 type memory struct {
-	Active         int `json:"active"         node:"Active_bytes"       m:"1024" help:"The amount of assigned memory, in kilobytes."`
-	Buffers        int `json:"buffers"        node:"Buffers_bytes"      m:"1024" help:"The amount of memory used for buffering I/O requests prior to writing to the storage device, in kilobytes."`
-	Cached         int `json:"cached"         node:"Cached_bytes"       m:"1024" help:"The amount of memory used for caching file system–based I/O."`
-	Dirty          int `json:"dirty"          node:"Dirty_bytes"        m:"1024" help:"The amount of memory pages in RAM that have been modified but not written to their related data block in storage, in kilobytes."`
-	Free           int `json:"free"           node:"MemFree_bytes"      m:"1024" help:"The amount of unassigned memory, in kilobytes."`
-	HugePagesFree  int `json:"hugePagesFree"  node:"HugePages_Free"     m:"1"    help:"The number of free huge pages. Huge pages are a feature of the Linux kernel."`
-	HugePagesRsvd  int `json:"hugePagesRsvd"  node:"HugePages_Rsvd"     m:"1"    help:"The number of committed huge pages."`
-	HugePagesSize  int `json:"hugePagesSize"  node:"Hugepagesize_bytes" m:"1024" help:"The size for each huge pages unit, in kilobytes."`
-	HugePagesSurp  int `json:"hugePagesSurp"  node:"HugePages_Surp"     m:"1"    help:"The number of available surplus huge pages over the total."`
-	HugePagesTotal int `json:"hugePagesTotal" node:"HugePages_Total"    m:"1"    help:"The total number of huge pages for the system."`
-	Inactive       int `json:"inactive"       node:"Inactive_bytes"     m:"1024" help:"The amount of least-frequently used memory pages, in kilobytes."`
-	Mapped         int `json:"mapped"         node:"Mapped_bytes"       m:"1024" help:"The total amount of file-system contents that is memory mapped inside a process address space, in kilobytes."`
-	PageTables     int `json:"pageTables"     node:"PageTables_bytes"   m:"1024" help:"The amount of memory used by page tables, in kilobytes."`
-	Slab           int `json:"slab"           node:"Slab_bytes"         m:"1024" help:"The amount of reusable kernel data structures, in kilobytes."`
-	Total          int `json:"total"          node:"MemTotal_bytes"     m:"1024" help:"The total amount of memory, in kilobytes."`
-	Writeback      int `json:"writeback"      node:"Writeback_bytes"    m:"1024" help:"The amount of dirty pages in RAM that are still being written to the backing storage, in kilobytes."`
+	Active  int `json:"active"         node:"Active_bytes"       m:"1024" help:"The amount of assigned memory, in kilobytes."`
+	Buffers int `json:"buffers"        node:"Buffers_bytes"      m:"1024" help:"The amount of memory used for buffering I/O requests prior to writing to the storage device, in kilobytes."`
+	Cached  int `json:"cached"         node:"Cached_bytes"       m:"1024" help:"The amount of memory used for caching file system–based I/O."`
+	Dirty   int `json:"dirty"          node:"Dirty_bytes"        m:"1024" help:"The amount of memory pages in RAM that have been modified but not written to their related data block in storage, in kilobytes."`
+	Free    int `json:"free"           node:"MemFree_bytes"      m:"1024" help:"The amount of unassigned memory, in kilobytes."`
+	Total   int `json:"total"          node:"MemTotal_bytes"     m:"1024" help:"The total amount of memory, in kilobytes."`
+
+	/*
+		HugePagesFree  int `json:"hugePagesFree"  node:"HugePages_Free"     m:"1"    help:"The number of free huge pages. Huge pages are a feature of the Linux kernel."`
+		HugePagesRsvd  int `json:"hugePagesRsvd"  node:"HugePages_Rsvd"     m:"1"    help:"The number of committed huge pages."`
+		HugePagesSize  int `json:"hugePagesSize"  node:"Hugepagesize_bytes" m:"1024" help:"The size for each huge pages unit, in kilobytes."`
+		HugePagesSurp  int `json:"hugePagesSurp"  node:"HugePages_Surp"     m:"1"    help:"The number of available surplus huge pages over the total."`
+		HugePagesTotal int `json:"hugePagesTotal" node:"HugePages_Total"    m:"1"    help:"The total number of huge pages for the system."`
+		Inactive       int `json:"inactive"       node:"Inactive_bytes"     m:"1024" help:"The amount of least-frequently used memory pages, in kilobytes."`
+		Mapped         int `json:"mapped"         node:"Mapped_bytes"       m:"1024" help:"The total amount of file-system contents that is memory mapped inside a process address space, in kilobytes."`
+		PageTables     int `json:"pageTables"     node:"PageTables_bytes"   m:"1024" help:"The amount of memory used by page tables, in kilobytes."`
+		Slab           int `json:"slab"           node:"Slab_bytes"         m:"1024" help:"The amount of reusable kernel data structures, in kilobytes."`
+		Writeback      int `json:"writeback"      node:"Writeback_bytes"    m:"1024" help:"The amount of dirty pages in RAM that are still being written to the backing storage, in kilobytes."`
+	*/
 }
 
 type network struct {
@@ -266,20 +271,22 @@ func makeRDSDiskIOMetrics(s *diskIO, constLabels prometheus.Labels) []prometheus
 // makeNodeDiskMetrics returns node_exporter-like node_disk_ metrics.
 func makeNodeDiskMetrics(s *diskIO, constLabels prometheus.Labels) []prometheus.Metric {
 	// move device name to label
-	labelKeys := []string{"device"}
-	labelValues := []string{s.Device}
+	//labelKeys := []string{"device"}
+	//labelValues := []string{s.Device}
 	res := make([]prometheus.Metric, 0, 2)
 
-	if s.ReadKb != nil {
-		desc := prometheus.NewDesc("node_disk_read_bytes_total", "The total number of bytes read successfully.", labelKeys, constLabels)
-		m := prometheus.MustNewConstMetric(desc, prometheus.CounterValue, float64(*s.ReadKb*1024), labelValues...)
-		res = append(res, m)
-	}
-	if s.WriteKb != nil {
-		desc := prometheus.NewDesc("node_disk_written_bytes_total", "The total number of bytes written successfully.", labelKeys, constLabels)
-		m := prometheus.MustNewConstMetric(desc, prometheus.CounterValue, float64(*s.WriteKb*1024), labelValues...)
-		res = append(res, m)
-	}
+	/*
+		if s.ReadKb != nil {
+			desc := prometheus.NewDesc("node_disk_read_bytes_total", "The total number of bytes read successfully.", labelKeys, constLabels)
+			m := prometheus.MustNewConstMetric(desc, prometheus.CounterValue, float64(*s.ReadKb*1024), labelValues...)
+			res = append(res, m)
+		}
+		if s.WriteKb != nil {
+			desc := prometheus.NewDesc("node_disk_written_bytes_total", "The total number of bytes written successfully.", labelKeys, constLabels)
+			m := prometheus.MustNewConstMetric(desc, prometheus.CounterValue, float64(*s.WriteKb*1024), labelValues...)
+			res = append(res, m)
+		}
+	*/
 
 	return res
 }
@@ -478,54 +485,75 @@ func (m *osMetrics) makePrometheusMetrics(region string, labels map[string]strin
 
 	metrics := makeGenericMetrics(m.CPUUtilization, "rdsosmetrics_cpuUtilization_", constLabels)
 	res = append(res, metrics...)
-	metrics = makeNodeCPUMetrics(&m.CPUUtilization, constLabels)
-	res = append(res, metrics...)
+	/*
+		metrics = makeNodeCPUMetrics(&m.CPUUtilization, constLabels)
+		res = append(res, metrics...)
+	*/
 
 	for _, disk := range m.DiskIO {
 		metrics = makeRDSDiskIOMetrics(&disk, constLabels)
 		res = append(res, metrics...)
-		metrics = makeNodeDiskMetrics(&disk, constLabels)
-		res = append(res, metrics...)
+		/*
+			metrics = makeNodeDiskMetrics(&disk, constLabels)
+			res = append(res, metrics...)
+		*/
 	}
 
-	for _, fs := range m.FileSys {
-		metrics = makeRDSFileSysMetrics(&fs, constLabels)
-		res = append(res, metrics...)
-		metrics = makeNodeFilesystemMetrics(&fs, constLabels)
-		res = append(res, metrics...)
-	}
-
+	/*
+		for _, fs := range m.FileSys {
+			metrics = makeRDSFileSysMetrics(&fs, constLabels)
+			res = append(res, metrics...)
+			metrics = makeNodeFilesystemMetrics(&fs, constLabels)
+			res = append(res, metrics...)
+		}
+	*/
 	metrics = makeGenericMetrics(m.LoadAverageMinute, "rdsosmetrics_loadAverageMinute_", constLabels)
 	res = append(res, metrics...)
-	metrics = makeNodeLoadMetrics(&m.LoadAverageMinute, constLabels)
-	res = append(res, metrics...)
+
+	/*
+		metrics = makeNodeLoadMetrics(&m.LoadAverageMinute, constLabels)
+		res = append(res, metrics...)
+	*/
 
 	metrics = makeGenericMetrics(m.Memory, "rdsosmetrics_memory_", constLabels)
 	res = append(res, metrics...)
-	metrics = makeNodeMemoryMetrics(&m.Memory, constLabels)
-	res = append(res, metrics...)
-
-	for _, n := range m.Network {
-		metrics = makeRDSNetworkMetrics(&n, constLabels)
+	/*
+		metrics = makeNodeMemoryMetrics(&m.Memory, constLabels)
 		res = append(res, metrics...)
-		// we can't make node_exporter-like metrics: AWS gives us rates, node_exporter - total counters
-	}
+	*/
 
-	for _, p := range m.ProcessList {
-		metrics = makeRDSProcessListMetrics(&p, constLabels)
+	/*
+		for _, n := range m.Network {
+			metrics = makeRDSNetworkMetrics(&n, constLabels)
+			res = append(res, metrics...)
+			// we can't make node_exporter-like metrics: AWS gives us rates, node_exporter - total counters
+		}
+
+	*/
+
+	/*
+		for _, p := range m.ProcessList {
+			metrics = makeRDSProcessListMetrics(&p, constLabels)
+			res = append(res, metrics...)
+			// no node_exporter-like metrics
+		}
+
+	*/
+
+	/*
+		metrics = makeGenericMetrics(m.Swap, "rdsosmetrics_swap_", constLabels)
 		res = append(res, metrics...)
-		// no node_exporter-like metrics
-	}
+		metrics = makeNodeMemorySwapMetrics(&m.Swap, constLabels)
+		res = append(res, metrics...)
 
-	metrics = makeGenericMetrics(m.Swap, "rdsosmetrics_swap_", constLabels)
-	res = append(res, metrics...)
-	metrics = makeNodeMemorySwapMetrics(&m.Swap, constLabels)
-	res = append(res, metrics...)
+	*/
+	/*
+		metrics = makeGenericMetrics(m.Tasks, "rdsosmetrics_tasks_", constLabels)
+		res = append(res, metrics...)
+		metrics = makeNodeProcsMetrics(&m.Tasks, constLabels)
+		res = append(res, metrics...)
 
-	metrics = makeGenericMetrics(m.Tasks, "rdsosmetrics_tasks_", constLabels)
-	res = append(res, metrics...)
-	metrics = makeNodeProcsMetrics(&m.Tasks, constLabels)
-	res = append(res, metrics...)
+	*/
 
 	return res
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/prometheus/common/version"
 	"gopkg.in/alecthomas/kingpin.v2"
 
-	"github.com/percona/rds_exporter/basic"
+	//"github.com/percona/rds_exporter/basic"
 	"github.com/percona/rds_exporter/client"
 	"github.com/percona/rds_exporter/config"
 	"github.com/percona/rds_exporter/enhanced"
@@ -43,14 +43,16 @@ func main() {
 	}
 
 	// basic metrics + client metrics + exporter own metrics (ProcessCollector and GoCollector)
-	{
-		prometheus.MustRegister(basic.New(cfg, sess))
-		prometheus.MustRegister(client)
-		http.Handle(*basicMetricsPathF, promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{
-			ErrorLog:      log.NewErrorLogger(),
-			ErrorHandling: promhttp.ContinueOnError,
-		}))
-	}
+	/*
+		{
+			prometheus.MustRegister(basic.New(cfg, sess))
+			prometheus.MustRegister(client)
+			http.Handle(*basicMetricsPathF, promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{
+				ErrorLog:      log.NewErrorLogger(),
+				ErrorHandling: promhttp.ContinueOnError,
+			}))
+		}
+	*/
 
 	// enhanced metrics
 	{
