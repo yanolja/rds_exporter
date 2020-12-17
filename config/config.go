@@ -20,6 +20,7 @@ import (
 type Instance struct {
 	Region                 string            `yaml:"region"`
 	Instance               string            `yaml:"instance"`
+	AWSRoleARN   		   string            `yaml:"aws_role_arn"`   // may be empty
 	AWSAccessKey           string            `yaml:"aws_access_key"` // may be empty
 	AWSSecretKey           string            `yaml:"aws_secret_key"` // may be empty
 	DisableBasicMetrics    bool              `yaml:"disable_basic_metrics"`

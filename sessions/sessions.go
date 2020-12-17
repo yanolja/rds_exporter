@@ -9,6 +9,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/prometheus/common/log"
@@ -51,8 +52,10 @@ func New(instances []config.Instance, client *http.Client, trace bool) (*Session
 
 	sharedSessions := make(map[string]*session.Session) // region/key => session
 	for _, instance := range instances {
+		sessionKey := makeSessionKey(instance)
+
 		// re-use session for the same region and key (explicit or empty for implicit) pair
-		if s := sharedSessions[instance.Region+"/"+instance.AWSAccessKey]; s != nil {
+		if s := sharedSessions[instance.Region+"/"+sessionKey]; s != nil {
 			res.sessions[s] = append(res.sessions[s], Instance{
 				Region:                 instance.Region,
 				Instance:               instance.Instance,
@@ -64,14 +67,10 @@ func New(instances []config.Instance, client *http.Client, trace bool) (*Session
 		}
 
 		// use given credentials, or default credential chain
-		var creds *credentials.Credentials
-		if instance.AWSAccessKey != "" || instance.AWSSecretKey != "" {
-			creds = credentials.NewCredentials(&credentials.StaticProvider{
-				Value: credentials.Value{
-					AccessKeyID:     instance.AWSAccessKey,
-					SecretAccessKey: instance.AWSSecretKey,
-				},
-			})
+		creds, err := buildCredentials(instance, client)
+
+		if err != nil {
+			return nil, err
 		}
 
 		// make config with careful logging
@@ -98,7 +97,7 @@ func New(instances []config.Instance, client *http.Client, trace bool) (*Session
 		if err != nil {
 			return nil, err
 		}
-		sharedSessions[instance.Region+"/"+instance.AWSAccessKey] = s
+		sharedSessions[instance.Region+"/"+sessionKey] = s
 		res.sessions[s] = append(res.sessions[s], Instance{
 			Region:                 instance.Region,
 			Instance:               instance.Instance,
@@ -166,6 +165,43 @@ func New(instances []config.Instance, client *http.Client, trace bool) (*Session
 
 	logger.Infof("Using %d sessions.", len(res.sessions))
 	return res, nil
+}
+
+func makeSessionKey(instance config.Instance) string {
+	if instance.AWSAccessKey != "" {
+		return instance.AWSAccessKey
+	}
+
+	if instance.AWSRoleARN != "" {
+		return instance.AWSRoleARN
+	}
+
+	return ""
+}
+
+func buildCredentials(instance config.Instance, client *http.Client) (*credentials.Credentials, error) {
+	if instance.AWSAccessKey != "" || instance.AWSSecretKey != "" {
+		return credentials.NewCredentials(&credentials.StaticProvider{
+			Value: credentials.Value{
+				AccessKeyID:     instance.AWSAccessKey,
+				SecretAccessKey: instance.AWSSecretKey,
+			},
+		}), nil
+	}
+
+	if instance.AWSRoleARN != "" {
+		stsSession, err := session.NewSession(&aws.Config{
+			Region: aws.String(instance.Region),
+			HTTPClient: client,
+		})
+		if err != nil {
+			return nil, err
+		}
+
+		return stscreds.NewCredentials(stsSession, instance.AWSRoleARN), nil
+	}
+
+	return nil, nil
 }
 
 // GetSession returns session and full instance information for given region and instance.
